@@ -27,6 +27,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.AppTask;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -328,7 +329,22 @@ public class BackgroundModeExt extends CordovaPlugin {
     private void unlock()
     {
         addSreenAndKeyguardFlags();
-        getApp().startActivity(getLaunchIntent());
+        bringToFront();
+        //getApp().startActivity(getLaunchIntent());
+    }
+
+    private void bringToFront() {
+        Intent notificationIntent = new Intent(getApp(), getApp().getClass());
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApp(), 0, notificationIntent, 0);
+        try
+        {
+            pendingIntent.send();
+        }
+        catch (PendingIntent.CanceledException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     /**
